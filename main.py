@@ -1,16 +1,16 @@
 from PIL import Image
-import sys, time
+import time, argparse
 from tqdm import trange
 
 def main():
     start = time.time()
-    imagePath = sys.argv[1]
-    imageOut = sys.argv[2]
+    imagePath = args.Input_File
+    imageOut = args.Output_File
     im = Image.open(imagePath)
     pixel_xy = [0, 0]
     pixel_color = (0,0,0)
-    grayscaleDiff = (255/int(sys.argv[3]))
-    neighboringPixelDiff = float(sys.argv[4])
+    grayscaleDiff = (255/args.NumofShades)
+    neighboringPixelDiff = args.Differrence
     skipped = 0
     rawData = b''
     area = im.size[0]*im.size[1]
@@ -60,4 +60,10 @@ def main():
     out.show()
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(prog="main.py", description="Grayscale's an Image")
+    parser.add_argument("Input_File", help="Input File")
+    parser.add_argument("-o", "--Out", help="Output File [Default: out.png]", default="out.png", metavar="OUT_FILE", dest="Output_File")
+    parser.add_argument("-Sn", "--ShadeNum", dest="NumofShades", type=int, help="Num of Shades of Gray to allow", metavar="[0-255]", required=True)
+    parser.add_argument("-D", "--Diff", dest="Differrence", type=float, help="Neighbouring pixel differrence", metavar="[0.0-1.0]", required=True)
+    args = parser.parse_args()
     main()
